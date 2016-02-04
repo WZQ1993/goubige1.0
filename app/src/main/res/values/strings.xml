@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Support-Library-Demo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="wzq">Wangziqing</string>
+    <!--菜单-->
+    <string name="shouye">首页</string>
+    <string name="sort">分类</string>
+    <string name="faxian">发现</string>
+</resources>
