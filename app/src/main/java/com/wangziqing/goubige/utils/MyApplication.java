@@ -1,7 +1,6 @@
 package com.wangziqing.goubige.utils;
 
 import android.app.Application;
-
 import org.xutils.BuildConfig;
 import org.xutils.x;
 

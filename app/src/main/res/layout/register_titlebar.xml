@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+     >
+    <ImageView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/return_iv"
+        android:src="@drawable/return_selector"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_centerVertical="true"/>
+    <TextView 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:text="完善个人信息   "
+        android:textSize="18sp"
+        android:layout_toRightOf="@id/return_iv"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"/>
+     <View 
+         android:layout_width="fill_parent"
+         android:layout_height="1dp"
+         android:background="#C4C4C4"
+         android:layout_alignParentBottom="true"
+        
+     	/>
+    
+
+</RelativeLayout>

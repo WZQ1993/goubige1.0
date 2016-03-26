@@ -30,11 +30,11 @@ public class ShareFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mRecyclerView = (RecyclerView) mParentView.findViewById(R.id.recycler_view);
-
-        LinearLayoutManager manager = new LinearLayoutManager(mRecyclerView.getContext());
-        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(new RecyclerViewAdapter(getActivity()));
+//        mRecyclerView = (RecyclerView) mParentView.findViewById(R.id.recycler_view);
+//
+//        LinearLayoutManager manager = new LinearLayoutManager(mRecyclerView.getContext());
+//        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+//        mRecyclerView.setLayoutManager(manager);
+//        mRecyclerView.setAdapter(new RecyclerViewAdapter(getActivity()));
     }
 }

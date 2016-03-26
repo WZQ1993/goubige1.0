@@ -14,6 +14,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import org.xutils.view.annotation.ContentView;
+import org.xutils.x;
+
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -35,6 +39,8 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //注解事件
+        x.view().inject(this);
         setContentView(R.layout.activity_main_old);
         //初始化控件及布局
         initView();

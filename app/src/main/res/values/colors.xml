@@ -10,4 +10,12 @@
     <color name="color_7">#cccc99</color>
     <color name="color_8">#cc9966</color>
     <color name="color_9">#ff99cc</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="price_current">#EE4000</color>
+    <color name="price_old">#605f5f</color>
+    <color name="background">#e7e6e6</color>
+    <color name="users">#FFFFFF</color>
+    <color name="tag_tip">#898989</color>
 </resources>

@@ -8,8 +8,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.widget.ImageView;
+
 import com.wangziqing.goubige.R;
+import com.wangziqing.goubige.service.GoodService;
+import com.wangziqing.goubige.service.ServiceFactory;
+import com.wangziqing.goubige.utils.MyData;
 
 import java.util.Random;
 //import butterknife.ButterKnife;
@@ -21,10 +26,8 @@ import java.util.Random;
  */
 public class EntryActivity extends ActionBarActivity {
 
-       private static final int ANIMATION_DURATION = 2000;
+    private static final int ANIMATION_DURATION = 2000;
     private static final float SCALE_END = 1.13F;
-
-
     private static final int[] SPLASH_ARRAY = {
             R.drawable.splash0,
             R.drawable.splash1,
@@ -51,12 +54,18 @@ public class EntryActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
-        mSplashImage = (ImageView)this.findViewById( R.id.iv_entry);
+        mSplashImage = (ImageView) this.findViewById(R.id.iv_entry);
 
         Random r = new Random(SystemClock.elapsedRealtime());
         mSplashImage.setImageResource(SPLASH_ARRAY[r.nextInt(SPLASH_ARRAY.length)]);
+        //保存屏幕宽度
+        MyData.setWindowManager(this);
+        //设置路径
+        MyData.setDataPath(this);
+        MyData.getSDCARDPATH();
         animateImage();
         //toolbar.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -77,6 +86,7 @@ public class EntryActivity extends ActionBarActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
 //                MainActivity.start(EntryActivity.this);
+                //初次进入可以考虑在此处获取数据，成功在进去
                 EntryActivity.this.startActivity(new Intent(EntryActivity.this, MainActivity.class));
                 EntryActivity.this.finish();
             }
