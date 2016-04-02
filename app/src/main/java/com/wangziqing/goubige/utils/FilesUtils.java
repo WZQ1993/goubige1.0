@@ -40,8 +40,15 @@ public class FilesUtils {
             (RequestParams requestParams,final Callback.CommonCallback<T> callback) {
         return HttpUtils.doPost(requestParams,callback);
     }
-    public File saveImage(Bitmap bitmap){
-        File imgFile=creatFile("header.png",IMAGEDIR);
+    public File getImage(int ID){
+        File file=new File(IMAGEDIR,"/"+ID+".png");
+        Log.d(TAG,file.getPath());
+        if(file.exists())return file;
+        else return null;
+    }
+    public File saveImage(Bitmap bitmap,String imageName){
+        File imgFile=creatFile(imageName,IMAGEDIR);
+        Log.d(TAG,"保存到："+IMAGEDIR);
         FileOutputStream Fout=null;
         try{
             Fout=new FileOutputStream(imgFile);
@@ -56,6 +63,7 @@ public class FilesUtils {
                 Log.d(TAG,e.getMessage()+"保存图片出错");
             }
         }
+        SharedPerferencesUtil.getInstance().setLocalheader(imgFile.getPath());
         return imgFile;
     }
     private static File creatDir(String dir){

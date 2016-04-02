@@ -4,10 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
-import android.nfc.Tag;
-import android.nfc.tech.IsoDep;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -15,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.wangziqing.goubige.R;
@@ -90,11 +86,12 @@ public class RegsterAvtivity extends BaseActivity {
     }
     @Event(value = R.id.register_img, type = ImageView.OnClickListener.class)
     private void uploadImage(View view){
-        Log.d(TAG, "上传头像");
         // 调用系统相册
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
+        intent.setAction(Intent.ACTION_PICK);
+        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, RESULT_CODE);
     }
     /*
@@ -119,18 +116,17 @@ public class RegsterAvtivity extends BaseActivity {
             cursor.close();
             //获取图片-并缓存
             Bitmap imageBitmap= ImageUtils.
-                    compressImage(BitmapFactory.decodeFile(imagePath));
+                    compressImage(imagePath);
             register_img.setImageBitmap(imageBitmap);
             //把图片上传到服务器
             UploadHeaderParams params=new UploadHeaderParams();
-            params=isPhone?
-                    params.telePhone(user.getTelePhone()):params.email(user.getEmail());
-            params.file(
-                    //保存到本地文件夹
-                    FilesUtils.getFileutils().saveImage(imageBitmap));
-//            FilesUtils.getFileutils().uploadFile(
-//                    params,
-//            );
+//            params=isPhone?
+//                    params.telePhone(user.getTelePhone()):params.email(user.getEmail());
+            params.ID(user.getID());
+            File imageFile=FilesUtils.getFileutils().saveImage(imageBitmap,user.getID()+".png");
+            params.file(imageFile);
+            usersService.uploadHeader(params);
+            user.setUserImg(user.getID()+".png");
         }
     }
 

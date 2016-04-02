@@ -1,6 +1,5 @@
 package com.wangziqing.goubige.ui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +9,6 @@ import android.widget.EditText;
 
 import com.google.common.eventbus.Subscribe;
 import com.wangziqing.goubige.R;
-import com.wangziqing.goubige.model.LoginEvent;
 import com.wangziqing.goubige.model.StartRegisterEvent;
 import com.wangziqing.goubige.model.Users;
 import com.wangziqing.goubige.service.ServiceFactory;
@@ -65,8 +63,8 @@ public class LoginActivity extends BaseActivity{
             usersService.register(user);
         }
     }
-    @Subscribe
-    private void RegisterEvent(StartRegisterEvent startRegisterEvent) {
+    @Subscribe public void RegisterEvent(StartRegisterEvent startRegisterEvent) {
+        Log.d(TAG,"接收到注册成功事件");
         Intent intent=new Intent(this,RegsterAvtivity.class);
         intent.putExtra("user",startRegisterEvent.user);
         this.startActivity(intent);

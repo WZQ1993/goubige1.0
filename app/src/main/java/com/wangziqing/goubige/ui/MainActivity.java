@@ -2,7 +2,6 @@ package com.wangziqing.goubige.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -15,21 +14,27 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.eventbus.Subscribe;
-import com.wangziqing.goubige.AgendaFragment;
 import com.wangziqing.goubige.FragmentAdapter;
 import com.wangziqing.goubige.InfoDetailsFragment;
 import com.wangziqing.goubige.R;
+import com.wangziqing.goubige.model.InitNavigationViewDataEvent;
 import com.wangziqing.goubige.model.LoginEvent;
+import com.wangziqing.goubige.model.Users;
+import com.wangziqing.goubige.utils.CricleImageView;
 import com.wangziqing.goubige.utils.EventBusFactory;
+import com.wangziqing.goubige.utils.FilesUtils;
+import com.wangziqing.goubige.utils.MyImageOptionsFactory;
+import com.wangziqing.goubige.utils.SharedPerferencesUtil;
 
 import org.xutils.view.annotation.ContentView;
-import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +44,7 @@ import java.util.List;
  */
 @ContentView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
+    private static final String TAG="MainActivity";
     //将ToolBar与TabLayout结合放入AppBarLayout
     @ViewInject(R.id.tool_bar)
     private Toolbar mToolbar;
@@ -52,7 +58,8 @@ public class MainActivity extends BaseActivity {
     @ViewInject(R.id.view_pager)
     private ViewPager mViewPager;
     private View headerView;
-    private ImageView userImage;
+    private CricleImageView header_userimg;
+    private TextView header_username;
 
     private GoodsListFragment goodsListFragment;
     private BigSortsListFragment bigSortsListFragment;
@@ -71,7 +78,8 @@ public class MainActivity extends BaseActivity {
         mNavigationView = (NavigationView) this.findViewById(R.id.navigation_view);
         headerView=mNavigationView.getHeaderView(0);
         mViewPager = (ViewPager) this.findViewById(R.id.view_pager);
-        userImage=(ImageView)headerView.findViewById(R.id.header_userimg);
+        header_userimg=(CricleImageView)headerView.findViewById(R.id.header_userimg);
+        header_username=(TextView)headerView.findViewById(R.id.header_username);
         //初始化ToolBar
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -99,13 +107,22 @@ public class MainActivity extends BaseActivity {
         //对应的fragment和title，viewpaper依据setCurrentItem(0);切换页面
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
         mViewPager.setAdapter(adapter);
-        //个人头像点击事件
-        userImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBusFactory.getHttpEventBus().post(new LoginEvent());
-            }
-        });
+        //个人数据加载
+        Users user= JSON.parseObject(
+                SharedPerferencesUtil.getInstance().getUserJson(),
+                Users.class
+        );
+        Log.d(TAG,user.toString());
+        initNavigationViewData(user);
+        //个人头像点击事件-个人信息展示完成后+！
+        if(SharedPerferencesUtil.getInstance().getIsLogined())
+            header_userimg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                EventBusFactory.getHttpEventBus().post(new LoginEvent());
+                    startActivity(new Intent(x.app(), LoginActivity.class));
+                }
+            });
     }
 
     private NavigationView.OnNavigationItemSelectedListener naviListener =
@@ -157,9 +174,24 @@ public class MainActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+//    @Subscribe
+//    private void LoginEvent(LoginEvent loginEvent) {
+//        this.startActivity(new Intent(this,LoginActivity.class));
+//    }
+    private void initNavigationViewData(Users user){
+        File userimg=FilesUtils.getFileutils().getImage(user.getID());
+        if(null==userimg){
+            //从网络加载
+            x.image().bind(header_userimg,user.getUserImg(), MyImageOptionsFactory.getHeaderImageOptions());
+        }else{
+            //从本地加载
+            x.image().bind(header_userimg,userimg.getPath(), MyImageOptionsFactory.getHeaderImageOptions());
+        }
+        header_username.setText(user.getUserName());
+    }
     @Subscribe
-    private void LoginEvent(LoginEvent loginEvent) {
-        this.startActivity(new Intent(this,LoginActivity.class));
+    private void initNavigationViewEvent(InitNavigationViewDataEvent event){
+        initNavigationViewData(event.user);
     }
     public static void start(Activity activity) {
         //从Activity启动MainActivity

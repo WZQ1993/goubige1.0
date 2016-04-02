@@ -32,6 +32,10 @@ public class UploadHeaderParams extends RequestParams {
         this.email=email;
         return this;
     }
+    public UploadHeaderParams ID(int ID){
+        this.addParameter("ID",ID);
+        return this;
+    }
     public UploadHeaderParams file(File file){
         this.addBodyParameter(
                 USERIMG,
