@@ -1,6 +1,8 @@
 package com.wangziqing.goubige.http;
 
 
+import android.util.Log;
+
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
@@ -20,7 +22,6 @@ public class HttpUtils {
                 = x.http().get(requestParams, callback);
         return cancelable;
     }
-
     public static <T> Callback.Cancelable doPost(RequestParams requestParams, final Callback.CommonCallback<T> callback) {
         Callback.Cancelable cancelable
                 = x.http().post(requestParams, callback);

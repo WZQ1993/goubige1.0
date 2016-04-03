@@ -3,7 +3,6 @@ package com.wangziqing.goubige.ui;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,11 +13,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 
+import com.google.common.eventbus.Subscribe;
 import com.wangziqing.goubige.R;
 import com.wangziqing.goubige.http.UploadHeaderParams;
+import com.wangziqing.goubige.model.InitNavigationViewDataEvent;
+import com.wangziqing.goubige.model.GoToMainEvent;
 import com.wangziqing.goubige.model.Users;
 import com.wangziqing.goubige.service.ServiceFactory;
 import com.wangziqing.goubige.service.UsersService;
+import com.wangziqing.goubige.utils.EventBusFactory;
 import com.wangziqing.goubige.utils.FilesUtils;
 import com.wangziqing.goubige.utils.ImageUtils;
 import com.wangziqing.goubige.utils.ToastUtils;
@@ -151,7 +154,11 @@ public class RegsterAvtivity extends BaseActivity {
         }
         return true;
     }
-
+    @Subscribe
+    private void GoToMainEvent(GoToMainEvent event){
+        EventBusFactory.getHttpEventBus().post(new InitNavigationViewDataEvent().user(event.user));
+        this.startActivity(new Intent(this,MainActivity.class));
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

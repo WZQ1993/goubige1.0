@@ -123,6 +123,14 @@ public class MainActivity extends BaseActivity {
                     startActivity(new Intent(x.app(), LoginActivity.class));
                 }
             });
+        else
+            header_userimg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                EventBusFactory.getHttpEventBus().post(new LoginEvent());
+                    startActivity(new Intent(x.app(), LoginActivity.class));
+                }
+            });
     }
 
     private NavigationView.OnNavigationItemSelectedListener naviListener =
@@ -191,6 +199,9 @@ public class MainActivity extends BaseActivity {
     }
     @Subscribe
     private void initNavigationViewEvent(InitNavigationViewDataEvent event){
+        //缓存当前登录的用户
+        SharedPerferencesUtil.getInstance().setUserJson(JSON.toJSONString(event.user));
+        SharedPerferencesUtil.getInstance().setIsLogined(true);
         initNavigationViewData(event.user);
     }
     public static void start(Activity activity) {

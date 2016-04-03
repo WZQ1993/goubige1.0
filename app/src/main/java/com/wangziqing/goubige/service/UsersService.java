@@ -9,30 +9,27 @@ import com.wangziqing.goubige.http.HttpUtils;
 import com.wangziqing.goubige.http.RequestParamsFactory;
 import com.wangziqing.goubige.http.UploadHeaderParams;
 import com.wangziqing.goubige.http.UserUpdateParams;
+import com.wangziqing.goubige.http.UsersLoginParams;
 import com.wangziqing.goubige.http.UsersRegisterParams;
-import com.wangziqing.goubige.model.StartRegisterEvent;
+import com.wangziqing.goubige.model.UpdateUserStartEvent;
+import com.wangziqing.goubige.model.GoToMainEvent;
 import com.wangziqing.goubige.model.Users;
 import com.wangziqing.goubige.utils.EventBusFactory;
-import com.wangziqing.goubige.utils.SharedPerferencesUtil;
-import com.wangziqing.goubige.utils.UploadHeader;
 
 import org.xutils.common.Callback;
 import org.xutils.ex.HttpException;
 import org.xutils.x;
-
-import java.io.File;
 
 /**
  * Created by WZQ_PC on 2016/3/6 0006.
  */
 public class UsersService extends BaseService {
     private final static String TAG = "UsersService";
-    private UsersRegisterParams params = new UsersRegisterParams();
     private Callback.CommonCallback uploadCallBack = new Callback.CommonCallback<String>() {
         @Override
         public void onSuccess(String result) {
             Log.d(TAG, result);
-            Toast.makeText(x.app(),"头像上传成功",Toast.LENGTH_SHORT).show();
+            Toast.makeText(x.app(), "头像上传成功", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -66,11 +63,19 @@ public class UsersService extends BaseService {
             Log.d(TAG, result);
             //更多信息设置事件
             JSONObject jsonObject = JSON.parseObject(result);
-            Users user = JSON.parseObject(jsonObject.get("user").toString(),
-                    Users.class);
-            SharedPerferencesUtil.getInstance().setIsLogined(true);
-            EventBusFactory.getHttpEventBus().post(new StartRegisterEvent().user(user));
-            Log.d(TAG,"提交事件");
+            Users user = (Users)jsonObject.get("user");
+            if (null == user) {
+                //已存在
+                if (null == jsonObject.get("method"))
+                    Toast.makeText(x.app(), "账号已存在，请直接登陆", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(x.app(), "账号密码错误", Toast.LENGTH_SHORT).show();
+            } else {
+                if (null == jsonObject.get("method")){
+                    EventBusFactory.getHttpEventBus().post(new UpdateUserStartEvent().user(user));
+                }else{
+                    EventBusFactory.getHttpEventBus().post(new GoToMainEvent().user(user));
+                }
+            }
         }
 
         @Override
@@ -103,10 +108,10 @@ public class UsersService extends BaseService {
         public void onSuccess(String result) {
             Log.d(TAG, result);
             JSONObject jsonObject = JSON.parseObject(result);
-            String userJson=jsonObject.get("user").toString();
-            Users user = JSON.parseObject(userJson,Users.class);
+            String userJson = jsonObject.get("user").toString();
+            Users user = JSON.parseObject(userJson, Users.class);
             //将其存进本地数据库-转到首页
-            SharedPerferencesUtil.getInstance().setUserJson(userJson);
+            EventBusFactory.getHttpEventBus().post(new GoToMainEvent().user(user));
         }
 
         @Override
@@ -134,19 +139,32 @@ public class UsersService extends BaseService {
 
         }
     };
-    public void register(Users user) {
-        Log.d(TAG, "用户ID=" + user.getID());
+
+    public void login(Users user) {
+        Log.d(TAG,user.toString());
+        UsersLoginParams params= new UsersLoginParams();
         params.user(user);
+        params.addParameter("method", "authorizations");
         HttpUtils.doPost(params, registerCallBack);
     }
+
+    public void register(Users user) {
+        Log.d(TAG, "用户ID=" + user.getID());
+        UsersRegisterParams params= new UsersRegisterParams();
+        params.user(user);
+        params.addParameter("method", "register");
+        HttpUtils.doPost(params, registerCallBack);
+    }
+
     public void update(Users user) {
         Log.d(TAG, "用户ID=" + user.getID());
-        UserUpdateParams params=RequestParamsFactory.getUserUpdateParams(user.getID());
+        UserUpdateParams params = RequestParamsFactory.getUserUpdateParams(user.getID());
         params.user(user);
         HttpUtils.doPost(params, updateCallBack);
     }
-    public void uploadHeader(UploadHeaderParams uploadHeaderParams){
+
+    public void uploadHeader(UploadHeaderParams uploadHeaderParams) {
         //success
-        HttpUtils.doPost(uploadHeaderParams,uploadCallBack);
+        HttpUtils.doPost(uploadHeaderParams, uploadCallBack);
     }
 }

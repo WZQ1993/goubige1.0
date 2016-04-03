@@ -9,10 +9,13 @@ import android.widget.EditText;
 
 import com.google.common.eventbus.Subscribe;
 import com.wangziqing.goubige.R;
-import com.wangziqing.goubige.model.StartRegisterEvent;
+import com.wangziqing.goubige.model.GoToMainEvent;
+import com.wangziqing.goubige.model.InitNavigationViewDataEvent;
+import com.wangziqing.goubige.model.UpdateUserStartEvent;
 import com.wangziqing.goubige.model.Users;
 import com.wangziqing.goubige.service.ServiceFactory;
 import com.wangziqing.goubige.service.UsersService;
+import com.wangziqing.goubige.utils.EventBusFactory;
 import com.wangziqing.goubige.utils.MD5Utils;
 import com.wangziqing.goubige.utils.RegexUtils;
 import com.wangziqing.goubige.utils.ToastUtils;
@@ -50,11 +53,6 @@ public class LoginActivity extends BaseActivity{
         Log.d(TAG,"点击注册");
         if (isUsable()){
             isPhone=RegexUtils.isPhone(phoneOrEmailStr);
-//            Intent intent=new Intent(this,RegsterAvtivity.class);
-//            intent.putExtra("isPhone",isPhone);
-//            intent.putExtra("phoneOrEmail",phoneOrEmailStr);
-//            intent.putExtra("passWord", MD5Utils.GetMD5Code(passwordStr));
-//            this.startActivity(intent);
             Users user=new Users();
             if(isPhone)
                 user.setTelePhone(phoneOrEmailStr);
@@ -63,11 +61,30 @@ public class LoginActivity extends BaseActivity{
             usersService.register(user);
         }
     }
-    @Subscribe public void RegisterEvent(StartRegisterEvent startRegisterEvent) {
+    @Event(value = R.id.login_login,type = View.OnClickListener.class)
+    private void loginAction(View view){
+        Log.d(TAG,"点击登录");
+        if (isUsable()){
+            isPhone=RegexUtils.isPhone(phoneOrEmailStr);
+            Users user=new Users();
+            if(isPhone)
+                user.setTelePhone(phoneOrEmailStr);
+            else user.setEmail(phoneOrEmailStr);
+            user.setPassWord(MD5Utils.GetMD5Code(passwordStr));
+            usersService.login(user);
+        }
+    }
+    @Subscribe
+    public void RegisterEvent(UpdateUserStartEvent updateUserStartEvent) {
         Log.d(TAG,"接收到注册成功事件");
         Intent intent=new Intent(this,RegsterAvtivity.class);
-        intent.putExtra("user",startRegisterEvent.user);
+        intent.putExtra("user", updateUserStartEvent.user);
         this.startActivity(intent);
+    }
+    @Subscribe
+    private void GoToMainEvent(GoToMainEvent event){
+        EventBusFactory.getHttpEventBus().post(new InitNavigationViewDataEvent().user(event.user));
+        this.startActivity(new Intent(this,MainActivity.class));
     }
     private boolean isUsable(){
         phoneOrEmailStr=phoneOrEmail.getText().toString().trim();

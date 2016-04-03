@@ -12,15 +12,15 @@ import org.xutils.http.annotation.HttpRequest;
         //host表示主机域名或IP地址
         host = "http://192.168.1.20:8080/goubige",
         //path表示请求的资源
-        path = "user"
+        path = "user/authorizations"
 //        builder =UsersParamsBuilder.class
 )
-public class UsersRegisterParams extends RequestParams {
+public class UsersLoginParams extends RequestParams {
     public Users user;
-    public UsersRegisterParams(){
+    public UsersLoginParams(){
         this.setAsJsonContent(true);
     }
-    public UsersRegisterParams user(Users user) {
+    public UsersLoginParams user(Users user) {
         this.user = user;
         return this;
     }
