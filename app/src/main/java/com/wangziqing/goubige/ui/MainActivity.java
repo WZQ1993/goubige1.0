@@ -45,6 +45,7 @@ import java.util.List;
 @ContentView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
     private static final String TAG="MainActivity";
+    private static Users user;
     //将ToolBar与TabLayout结合放入AppBarLayout
     @ViewInject(R.id.tool_bar)
     private Toolbar mToolbar;
@@ -107,27 +108,29 @@ public class MainActivity extends BaseActivity {
         //对应的fragment和title，viewpaper依据setCurrentItem(0);切换页面
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
         mViewPager.setAdapter(adapter);
-        //个人数据加载
-        Users user= JSON.parseObject(
-                SharedPerferencesUtil.getInstance().getUserJson(),
-                Users.class
-        );
-        Log.d(TAG,user.toString());
-        initNavigationViewData(user);
         //个人头像点击事件-个人信息展示完成后+！
-        if(SharedPerferencesUtil.getInstance().getIsLogined())
+        if(SharedPerferencesUtil.getInstance().getIsLogined()){
+            //已登陆
+            //个人数据加载
+            user= JSON.parseObject(
+                    SharedPerferencesUtil.getInstance().getUserJson(),
+                    Users.class
+            );
+            Log.d(TAG,user.toString());
+            initNavigationViewData(user);
+
             header_userimg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                EventBusFactory.getHttpEventBus().post(new LoginEvent());
-                    startActivity(new Intent(x.app(), LoginActivity.class));
+                    //获取当前的用户ID，发送请求获取最新资料
+
                 }
             });
+        }
         else
             header_userimg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                EventBusFactory.getHttpEventBus().post(new LoginEvent());
                     startActivity(new Intent(x.app(), LoginActivity.class));
                 }
             });
@@ -202,6 +205,7 @@ public class MainActivity extends BaseActivity {
         //缓存当前登录的用户
         SharedPerferencesUtil.getInstance().setUserJson(JSON.toJSONString(event.user));
         SharedPerferencesUtil.getInstance().setIsLogined(true);
+        user=event.user;
         initNavigationViewData(event.user);
     }
     public static void start(Activity activity) {

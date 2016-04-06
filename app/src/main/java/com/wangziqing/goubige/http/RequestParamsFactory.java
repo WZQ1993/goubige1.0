@@ -19,4 +19,8 @@ public class RequestParamsFactory {
     public static UserUpdateParams getUserUpdateParams(int ID){
         return new UserUpdateParams(host+"/user/"+String.valueOf(ID));
     }
+
+    public static RequestParams getUserDetailsByIDParams(int ID){
+        return new RequestParams(host+"/user/"+ID);
+    }
 }

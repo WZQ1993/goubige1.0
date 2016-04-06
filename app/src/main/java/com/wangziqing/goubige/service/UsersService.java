@@ -11,13 +11,16 @@ import com.wangziqing.goubige.http.UploadHeaderParams;
 import com.wangziqing.goubige.http.UserUpdateParams;
 import com.wangziqing.goubige.http.UsersLoginParams;
 import com.wangziqing.goubige.http.UsersRegisterParams;
+import com.wangziqing.goubige.model.InitNavigationViewDataEvent;
 import com.wangziqing.goubige.model.UpdateUserStartEvent;
 import com.wangziqing.goubige.model.GoToMainEvent;
 import com.wangziqing.goubige.model.Users;
 import com.wangziqing.goubige.utils.EventBusFactory;
 
+import org.greenrobot.eventbus.EventBus;
 import org.xutils.common.Callback;
 import org.xutils.ex.HttpException;
+import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 /**
@@ -63,14 +66,16 @@ public class UsersService extends BaseService {
             Log.d(TAG, result);
             //更多信息设置事件
             JSONObject jsonObject = JSON.parseObject(result);
-            Users user = (Users)jsonObject.get("user");
-            if (null == user) {
+            Users user = jsonObject.getObject("user",Users.class);
+            String method=jsonObject.getString("method");
+            boolean IsSuccess=jsonObject.getBoolean("IsSuccess");
+            if (!IsSuccess) {
                 //已存在
-                if (null == jsonObject.get("method"))
+                if ("register".equals(method))
                     Toast.makeText(x.app(), "账号已存在，请直接登陆", Toast.LENGTH_SHORT).show();
                 else Toast.makeText(x.app(), "账号密码错误", Toast.LENGTH_SHORT).show();
             } else {
-                if (null == jsonObject.get("method")){
+                if ("register".equals(method)){
                     EventBusFactory.getHttpEventBus().post(new UpdateUserStartEvent().user(user));
                 }else{
                     EventBusFactory.getHttpEventBus().post(new GoToMainEvent().user(user));
@@ -139,7 +144,47 @@ public class UsersService extends BaseService {
 
         }
     };
+    private Callback.CommonCallback BaseCallback = new Callback.CommonCallback<String>() {
+        @Override
+        public void onSuccess(String result) {
+            Log.d(TAG, result);
+            JSONObject jsonObject = JSON.parseObject(result);
+            String method=jsonObject.getString("method");
+            switch (method){
+                case "getUserDetailsByID":
+                    Users user=jsonObject.getObject("user",Users.class);
+                    //跳转到信息展示
+                    break;
+                default:
+                    break;
+            }
+        }
 
+        @Override
+        public void onError(Throwable ex, boolean isOnCallback) {
+            if (ex instanceof HttpException) {
+                HttpException httpException = (HttpException) ex;
+                int code = httpException.getCode();
+                String message = httpException.getMessage();
+                String result = httpException.getResult();
+                Log.d(TAG, "Code=" + code);
+                Log.d(TAG, "message=" + message);
+                Log.d(TAG, "result=" + result);
+            } else {
+
+            }
+        }
+
+        @Override
+        public void onCancelled(CancelledException cex) {
+
+        }
+
+        @Override
+        public void onFinished() {
+
+        }
+    };
     public void login(Users user) {
         Log.d(TAG,user.toString());
         UsersLoginParams params= new UsersLoginParams();
@@ -166,5 +211,9 @@ public class UsersService extends BaseService {
     public void uploadHeader(UploadHeaderParams uploadHeaderParams) {
         //success
         HttpUtils.doPost(uploadHeaderParams, uploadCallBack);
+    }
+    public void getUserDetailsByID(int ID){
+        RequestParams params=RequestParamsFactory.getUserDetailsByIDParams(ID);
+        HttpUtils.doGet(params,BaseCallback);
     }
 }
