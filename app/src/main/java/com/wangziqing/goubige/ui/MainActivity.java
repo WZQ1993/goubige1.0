@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -21,9 +22,12 @@ import com.google.common.eventbus.Subscribe;
 import com.wangziqing.goubige.FragmentAdapter;
 import com.wangziqing.goubige.InfoDetailsFragment;
 import com.wangziqing.goubige.R;
+import com.wangziqing.goubige.model.EventWithUser;
 import com.wangziqing.goubige.model.InitNavigationViewDataEvent;
 import com.wangziqing.goubige.model.LoginEvent;
 import com.wangziqing.goubige.model.Users;
+import com.wangziqing.goubige.service.ServiceFactory;
+import com.wangziqing.goubige.service.UsersService;
 import com.wangziqing.goubige.utils.CricleImageView;
 import com.wangziqing.goubige.utils.EventBusFactory;
 import com.wangziqing.goubige.utils.FilesUtils;
@@ -55,6 +59,9 @@ public class MainActivity extends BaseActivity {
     //DrawerLayout控件
     @ViewInject(R.id.drawer_layout)
     private DrawerLayout mDrawerLayout;
+    //Tab菜单，主界面上面的tab切换菜单
+    @ViewInject(R.id.tab_layout)
+    private TabLayout mTabLayout;
     //v4中的ViewPager控件
     @ViewInject(R.id.view_pager)
     private ViewPager mViewPager;
@@ -62,14 +69,21 @@ public class MainActivity extends BaseActivity {
     private CricleImageView header_userimg;
     private TextView header_username;
 
+    private FragmentAdapter adapter;
     private GoodsListFragment goodsListFragment;
     private BigSortsListFragment bigSortsListFragment;
+
+    private UsersService usersService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //初始化控件及布局
+        initData();
         initView();
+    }
+    private void initData(){
+        usersService= ServiceFactory.getUsersService();
     }
 
     private void initView() {
@@ -97,8 +111,8 @@ public class MainActivity extends BaseActivity {
         //初始化TabLayout的title数据集
         List<String> titles = new ArrayList<>();
         titles.add("首页");
-        titles.add("分类");
-        titles.add("发现");
+        titles.add("淘友晒物");
+        titles.add("购物达人");
         //初始化ViewPager的数据集
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(goodsListFragment);
@@ -108,7 +122,6 @@ public class MainActivity extends BaseActivity {
         //对应的fragment和title，viewpaper依据setCurrentItem(0);切换页面
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
         mViewPager.setAdapter(adapter);
-        //个人头像点击事件-个人信息展示完成后+！
         if(SharedPerferencesUtil.getInstance().getIsLogined()){
             //已登陆
             //个人数据加载
@@ -123,7 +136,7 @@ public class MainActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     //获取当前的用户ID，发送请求获取最新资料
-
+                    usersService.getUserDetailsByID(user.getID());
                 }
             });
         }
@@ -135,7 +148,7 @@ public class MainActivity extends BaseActivity {
                 }
             });
     }
-
+    //左侧侧边栏
     private NavigationView.OnNavigationItemSelectedListener naviListener =
             new NavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -185,10 +198,7 @@ public class MainActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-//    @Subscribe
-//    private void LoginEvent(LoginEvent loginEvent) {
-//        this.startActivity(new Intent(this,LoginActivity.class));
-//    }
+    //侧边栏个人信息
     private void initNavigationViewData(Users user){
         File userimg=FilesUtils.getFileutils().getImage(user.getID());
         if(null==userimg){
@@ -207,6 +217,21 @@ public class MainActivity extends BaseActivity {
         SharedPerferencesUtil.getInstance().setIsLogined(true);
         user=event.user;
         initNavigationViewData(event.user);
+    }
+    @Subscribe
+    private void EventWithUser(EventWithUser event){
+        switch (event.method){
+            case "showUserDetailEvent":
+                //缓存当前登录的用户
+                SharedPerferencesUtil.getInstance().setUserJson(JSON.toJSONString(event.user));
+                SharedPerferencesUtil.getInstance().setIsLogined(true);
+                user=event.user;
+                Intent intent=new Intent(this,UserDetailActivity.class);
+                intent.putExtra("user",user);
+                startActivity(intent);
+                break;
+        }
+
     }
     public static void start(Activity activity) {
         //从Activity启动MainActivity

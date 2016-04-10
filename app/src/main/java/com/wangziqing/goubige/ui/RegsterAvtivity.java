@@ -24,13 +24,16 @@ import com.wangziqing.goubige.service.UsersService;
 import com.wangziqing.goubige.utils.EventBusFactory;
 import com.wangziqing.goubige.utils.FilesUtils;
 import com.wangziqing.goubige.utils.ImageUtils;
+import com.wangziqing.goubige.utils.MyImageOptionsFactory;
 import com.wangziqing.goubige.utils.ToastUtils;
 
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import java.io.File;
+import java.lang.reflect.Type;
 
 /**
  * Created by WZQ_PC on 2016/3/7 0007.
@@ -57,27 +60,38 @@ public class RegsterAvtivity extends BaseActivity {
     private ImageView register_img;
 
     private Users user;
-    boolean isPhone;
+    private boolean isFromDetail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initdata();
+        initview();
     }
 
     private void initdata() {
         usersService = ServiceFactory.getUsersService();
         Intent intent = getIntent();
         user=(Users) intent.getSerializableExtra("user");
-//        isPhone= intent.getBooleanExtra("isPhone", false);
-//        String phoneOrEmail = intent.getStringExtra("phoneOrEmail");
-//        if (isPhone) {
-//            user.setTelePhone(phoneOrEmail);
-//        } else {
-//            user.setEmail(phoneOrEmail);
-//        }
-//        user.setPassWord(intent.getStringExtra("passWord"));
+        isFromDetail=intent.getBooleanExtra("isFromDetail",false);
     }
-
+    private void initview(){
+        if(isFromDetail){
+            File image= FilesUtils.getFileutils().getImage(user.getID());
+            if(null==image){
+                //从网络加载
+                x.image().bind(register_img,user.getUserImg(), MyImageOptionsFactory.getHeaderImageOptions());
+            }else{
+                //从本地加载
+                x.image().bind(register_img,image.getPath(), MyImageOptionsFactory.getHeaderImageOptions());
+            }
+            register_nickname.setText(user.getUserName());
+            register_realname.setText(user.getRealName());
+            if(user.getGender()==(byte)0)register_sex.check(R.id.man);
+            else register_sex.check(R.id.women);
+            register_age.setText(String.valueOf(user.getAge()));
+            register_info.setText(user.getInfo());
+        }
+    }
     @Event(value = R.id.register_sumbit, type = Button.OnClickListener.class)
     private void submit(View view) {
         Log.d(TAG, "修改提交");

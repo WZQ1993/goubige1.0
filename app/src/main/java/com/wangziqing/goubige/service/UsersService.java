@@ -1,5 +1,6 @@
 package com.wangziqing.goubige.service;
 
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -11,10 +12,12 @@ import com.wangziqing.goubige.http.UploadHeaderParams;
 import com.wangziqing.goubige.http.UserUpdateParams;
 import com.wangziqing.goubige.http.UsersLoginParams;
 import com.wangziqing.goubige.http.UsersRegisterParams;
+import com.wangziqing.goubige.model.EventWithUser;
 import com.wangziqing.goubige.model.InitNavigationViewDataEvent;
 import com.wangziqing.goubige.model.UpdateUserStartEvent;
 import com.wangziqing.goubige.model.GoToMainEvent;
 import com.wangziqing.goubige.model.Users;
+import com.wangziqing.goubige.ui.UserDetailActivity;
 import com.wangziqing.goubige.utils.EventBusFactory;
 
 import org.greenrobot.eventbus.EventBus;
@@ -151,9 +154,14 @@ public class UsersService extends BaseService {
             JSONObject jsonObject = JSON.parseObject(result);
             String method=jsonObject.getString("method");
             switch (method){
+                //在服务器写入
                 case "getUserDetailsByID":
                     Users user=jsonObject.getObject("user",Users.class);
                     //跳转到信息展示
+                    EventBusFactory.getHttpEventBus().post(
+                            new EventWithUser()
+                                    .user(user)
+                                    .method("showUserDetailEvent"));
                     break;
                 default:
                     break;
