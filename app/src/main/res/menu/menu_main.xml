@@ -1,17 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_info_details"
-        android:title="@string/shouye"
+    <item android:id="@+id/menu_main"
+        android:title="首页"
         android:checked="true"
         android:icon="@android:drawable/ic_menu_info_details"/>
 
     <item android:id="@+id/menu_share"
-        android:title="@string/sort"
+        android:title="分享圈"
         android:checked="true"
         android:icon="@android:drawable/ic_menu_share"/>
 
-    <item android:id="@+id/menu_agenda"
-        android:title="@string/faxian"
+    <item android:id="@+id/menu_talentUser"
+        android:title="达人秀"
         android:checked="true"
         android:icon="@android:drawable/ic_menu_agenda"/>
 </menu>

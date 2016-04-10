@@ -24,13 +24,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity-->
-            <!--android:name=".MainActivity"-->
-            <!--android:label="购逼格"></activity>-->
         <activity
             android:name=".ui.MainActivity"
-            android:label="购逼格"></activity>
-
+            android:label="首页"></activity>
+        <activity
+            android:name=".ui.ShareActivity"
+            android:label="分享圈"></activity>
+        <activity
+            android:name=".ui.StartUserActivity"
+            android:label="达人秀"></activity>
         <activity
             android:name=".SubActivity"
             android:label="工匠若水详情"></activity>
