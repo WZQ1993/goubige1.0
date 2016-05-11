@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@color/abc_background_cache_hint_selector_material_light"
+    android:orientation="horizontal">
+
+    <com.wangziqing.goubige.utils.CricleImageView
+        android:id="@+id/detail_userimg"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="15dp"
+        android:src="@drawable/logo" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginRight="30dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/detail_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="UserName"
+            android:textColor="@color/primary_text_default_material_light"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/detail_userinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="i am a boy ,are u ok?"
+            android:textColor="@color/primary_text_default_material_light"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="-30dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/right" />
+</LinearLayout>

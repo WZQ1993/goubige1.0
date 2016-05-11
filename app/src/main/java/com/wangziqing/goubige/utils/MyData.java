@@ -8,7 +8,7 @@ import android.view.WindowManager;
  * Created by WZQ_PC on 2016/2/21 0021.
  */
 public class MyData {
-    private MyData(){
+    private MyData() {
 
     }
 
@@ -16,8 +16,8 @@ public class MyData {
         return DATAPATH;
     }
 
-    public static void setDataPath(Context context){
-        DATAPATH= context.getFilesDir().getParentFile().getPath();
+    public static void setDataPath(Context context) {
+        DATAPATH = context.getFilesDir().getParentFile().getPath();
     }
 
     public static String getSDCARDPATH() {
@@ -28,20 +28,31 @@ public class MyData {
         MyData.SDCARDPATH = Environment.getExternalStorageDirectory().getParent();
     }
 
+    public static String getHOST() {
+        return HOST;
+    }
+
+    public static void setHOST(String HOST) {
+        MyData.HOST = HOST;
+    }
+
+    private static String HOST="http://192.168.1.20/goubige/";
     private static String DATAPATH;
     private static String SDCARDPATH;
-    private static WindowManager wm ;
+    private static WindowManager wm;
+
     //获取屏幕宽度
-    public static int getWidth(){
+    public static int getWidth() {
         return wm.getDefaultDisplay().getWidth();
     }
+
     //获取屏幕高度
-    public static int getHeight(){
+    public static int getHeight() {
         return wm.getDefaultDisplay().getHeight();
     }
 
-    public static void setWindowManager(Context context){
-        wm=(WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+    public static void setWindowManager(Context context) {
+        wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     }
 
 }

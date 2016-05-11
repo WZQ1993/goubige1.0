@@ -14,6 +14,7 @@ import com.wangziqing.goubige.R;
 import com.wangziqing.goubige.model.Users;
 import com.wangziqing.goubige.utils.CricleImageView;
 import com.wangziqing.goubige.utils.FilesUtils;
+import com.wangziqing.goubige.utils.MyData;
 import com.wangziqing.goubige.utils.MyImageOptionsFactory;
 import com.wangziqing.goubige.utils.SharedPerferencesUtil;
 
@@ -66,7 +67,7 @@ public class UserDetailActivity extends BaseActivity{
         File image= FilesUtils.getFileutils().getImage(user.getID());
         if(null==image){
             //从网络加载
-            x.image().bind(userImg,user.getUserImg(), MyImageOptionsFactory.getHeaderImageOptions());
+            x.image().bind(userImg, MyData.getHOST()+user.getUserImg(), MyImageOptionsFactory.getHeaderImageOptions());
         }else{
             //从本地加载
             x.image().bind(userImg,image.getPath(), MyImageOptionsFactory.getHeaderImageOptions());

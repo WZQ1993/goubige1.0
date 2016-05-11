@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.google.common.eventbus.Subscribe;
 import com.wangziqing.goubige.FragmentAdapter;
 import com.wangziqing.goubige.InfoDetailsFragment;
@@ -28,9 +29,11 @@ import com.wangziqing.goubige.model.LoginEvent;
 import com.wangziqing.goubige.model.Users;
 import com.wangziqing.goubige.service.ServiceFactory;
 import com.wangziqing.goubige.service.UsersService;
+import com.wangziqing.goubige.ui.utils.MyViewPaper;
 import com.wangziqing.goubige.utils.CricleImageView;
 import com.wangziqing.goubige.utils.EventBusFactory;
 import com.wangziqing.goubige.utils.FilesUtils;
+import com.wangziqing.goubige.utils.MyData;
 import com.wangziqing.goubige.utils.MyImageOptionsFactory;
 import com.wangziqing.goubige.utils.SharedPerferencesUtil;
 
@@ -48,7 +51,7 @@ import java.util.List;
  */
 @ContentView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
-    private static final String TAG="MainActivity";
+    private static final String TAG = "MainActivity";
     private static Users user;
     //将ToolBar与TabLayout结合放入AppBarLayout
     @ViewInject(R.id.tool_bar)
@@ -61,7 +64,7 @@ public class MainActivity extends BaseActivity {
     private DrawerLayout mDrawerLayout;
     //v4中的ViewPager控件
     @ViewInject(R.id.view_pager)
-    private ViewPager mViewPager;
+    private MyViewPaper mViewPager;
     //Tab菜单，主界面上面的tab切换菜单
     @ViewInject(R.id.tab_layout)
     private TabLayout mTabLayout;
@@ -70,12 +73,14 @@ public class MainActivity extends BaseActivity {
     private TextView header_username;
 
     private List<String> titles;
-    List<Fragment> fragments ;
+    private List<Fragment> fragments;
     private FragmentAdapter mainAdapter;
     private GoodsListFragment goodsListFragment;
     private GoodsListFragment goodsListFragment1;
     private BigSortsListFragment bigSortsListFragment;
+    private TestFragment testFragment1,testFragment2;
     private UsersService usersService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,30 +88,36 @@ public class MainActivity extends BaseActivity {
         initData();
         initView();
     }
-    private void initData(){
-        usersService= ServiceFactory.getUsersService();
+
+    private void initData() {
+        mViewPager.setTab(mTabLayout);
+        usersService = ServiceFactory.getUsersService();
         //初始化Fragment
-        goodsListFragment =new GoodsListFragment();
-        goodsListFragment1=new GoodsListFragment();
-        bigSortsListFragment=new BigSortsListFragment();
+        goodsListFragment = new GoodsListFragment();
+        goodsListFragment1 = new GoodsListFragment();
+        bigSortsListFragment = new BigSortsListFragment();
+        testFragment1 = new TestFragment();
+        testFragment2 = new TestFragment();
         //初始化TabLayout的title数据集
         titles = new ArrayList<>();
         titles.add("推荐");
         titles.add("热拍");
         titles.add("分类");
         //初始化ViewPager的数据集
-        fragments = new ArrayList<>();
+        fragments = Lists.newArrayList();
         fragments.add(goodsListFragment);
         fragments.add(goodsListFragment1);
         fragments.add(bigSortsListFragment);
+        fragments.add(testFragment1);
+        fragments.add(testFragment2);
         //创建ViewPager的adapter
-        mainAdapter=new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
+        mainAdapter = new FragmentAdapter(this,getSupportFragmentManager(), fragments, titles);
     }
 
     private void initView() {
-        headerView=mNavigationView.getHeaderView(0);
-        header_userimg=(CricleImageView)headerView.findViewById(R.id.header_userimg);
-        header_username=(TextView)headerView.findViewById(R.id.header_username);
+        headerView = mNavigationView.getHeaderView(0);
+        header_userimg = (CricleImageView) headerView.findViewById(R.id.header_userimg);
+        header_username = (TextView) headerView.findViewById(R.id.header_username);
         //初始化ToolBar
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -121,14 +132,14 @@ public class MainActivity extends BaseActivity {
         mViewPager.setAdapter(mainAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setTabsFromPagerAdapter(mainAdapter);
-        if(SharedPerferencesUtil.getInstance().getIsLogined()){
+        if (SharedPerferencesUtil.getInstance().getIsLogined()) {
             //已登陆
             //个人数据加载
-            user= JSON.parseObject(
+            user = JSON.parseObject(
                     SharedPerferencesUtil.getInstance().getUserJson(),
                     Users.class
             );
-            Log.d(TAG,user.toString());
+            Log.d(TAG, user.toString());
             initNavigationViewData(user);
 
             header_userimg.setOnClickListener(new View.OnClickListener() {
@@ -138,8 +149,7 @@ public class MainActivity extends BaseActivity {
                     usersService.getUserDetailsByID(user.getID());
                 }
             });
-        }
-        else
+        } else
             header_userimg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -147,27 +157,29 @@ public class MainActivity extends BaseActivity {
                 }
             });
     }
+
     //左侧侧边栏
     private NavigationView.OnNavigationItemSelectedListener naviListener =
             new NavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(MenuItem menuItem) {
-            //点击NavigationView中定义的menu item时触发反应
-            switch (menuItem.getItemId()) {
-                case R.id.menu_main:
-                    break;
-                case R.id.menu_share:
-                    startActivity(new Intent(x.app(),ShareActivity.class));
-                    break;
-                case R.id.menu_talentUser:
-                    startActivity(new Intent(x.app(),StartUserActivity.class));
-                    break;
-            }
-            //关闭DrawerLayout回到主界面选中的tab的fragment页
-            mDrawerLayout.closeDrawer(mNavigationView);
-            return false;
-        }
-    };
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    //点击NavigationView中定义的menu item时触发反应
+                    switch (menuItem.getItemId()) {
+                        case R.id.menu_main:
+                            mViewPager.setCurrentItem(0);
+                            break;
+                        case R.id.menu_share:
+                            mViewPager.setCurrentItem(3);
+                            break;
+                        case R.id.menu_talentUser:
+                            mViewPager.setCurrentItem(4);
+                            break;
+                    }
+                    //关闭DrawerLayout回到主界面选中的tab的fragment页
+                    mDrawerLayout.closeDrawer(mNavigationView);
+                    return false;
+                }
+            };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -175,17 +187,19 @@ public class MainActivity extends BaseActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     //右侧设置菜单
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_main:
+                mViewPager.setCurrentItem(0);
                 break;
             case R.id.menu_share:
-                startActivity(new Intent(x.app(),ShareActivity.class));
+                mViewPager.setCurrentItem(3);
                 break;
             case R.id.menu_talentUser:
-                startActivity(new Intent(x.app(),StartUserActivity.class));
+                mViewPager.setCurrentItem(4);
                 break;
             case android.R.id.home:
                 //主界面左上角的icon点击反应
@@ -194,41 +208,45 @@ public class MainActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     //侧边栏个人信息
-    private void initNavigationViewData(Users user){
-        File userimg=FilesUtils.getFileutils().getImage(user.getID());
-        if(null==userimg){
+    private void initNavigationViewData(Users user) {
+        File userimg = FilesUtils.getFileutils().getImage(user.getID());
+        if (null == userimg) {
             //从网络加载
-            x.image().bind(header_userimg,user.getUserImg(), MyImageOptionsFactory.getHeaderImageOptions());
-        }else{
+            x.image().bind(header_userimg, MyData.getHOST() + user.getUserImg(), MyImageOptionsFactory.getHeaderImageOptions());
+        } else {
             //从本地加载
-            x.image().bind(header_userimg,userimg.getPath(), MyImageOptionsFactory.getHeaderImageOptions());
+            x.image().bind(header_userimg, userimg.getPath(), MyImageOptionsFactory.getHeaderImageOptions());
         }
         header_username.setText(user.getUserName());
     }
+
     @Subscribe
-    private void initNavigationViewEvent(InitNavigationViewDataEvent event){
+    private void initNavigationViewEvent(InitNavigationViewDataEvent event) {
         //缓存当前登录的用户
         SharedPerferencesUtil.getInstance().setUserJson(JSON.toJSONString(event.user));
         SharedPerferencesUtil.getInstance().setIsLogined(true);
-        user=event.user;
+        user = event.user;
         initNavigationViewData(event.user);
     }
+
     @Subscribe
-    private void EventWithUser(EventWithUser event){
-        switch (event.method){
+    private void EventWithUser(EventWithUser event) {
+        switch (event.method) {
             case "showUserDetailEvent":
                 //缓存当前登录的用户
                 SharedPerferencesUtil.getInstance().setUserJson(JSON.toJSONString(event.user));
                 SharedPerferencesUtil.getInstance().setIsLogined(true);
-                user=event.user;
-                Intent intent=new Intent(this,UserDetailActivity.class);
-                intent.putExtra("user",user);
+                user = event.user;
+                Intent intent = new Intent(this, UserDetailActivity.class);
+                intent.putExtra("user", user);
                 startActivity(intent);
                 break;
         }
 
     }
+
     public static void start(Activity activity) {
         //从Activity启动MainActivity
         activity.startActivity(new Intent(activity, MainActivity.class));

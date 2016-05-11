@@ -1,8 +1,10 @@
 package com.wangziqing.goubige;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
 import java.util.List;
 
 /**
@@ -15,10 +17,10 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> mFragments;
     private List<String> mTitles;
 
-    public FragmentAdapter(FragmentManager fm, List<Fragment> fragments, List<String> titles) {
+    public FragmentAdapter(Context context,FragmentManager fm, List<Fragment> fragments, List<String> titles) {
         super(fm);
-        mFragments = fragments;
-        mTitles = titles;
+        this.mFragments = fragments;
+        this.mTitles = titles;
     }
 
     @Override
@@ -33,6 +35,9 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        if(position>=3){
+            return null;
+        }
         return mTitles.get(position);
     }
 }
