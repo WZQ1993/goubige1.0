@@ -36,7 +36,7 @@ public class MyData {
         MyData.HOST = HOST;
     }
 
-    private static String HOST="http://192.168.1.20/goubige/";
+    private static String HOST="http://192.168.1.20:8080/goubige/";
     private static String DATAPATH;
     private static String SDCARDPATH;
     private static WindowManager wm;

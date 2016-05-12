@@ -16,8 +16,7 @@ import java.util.List;
 public class FragmentAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> mFragments;
     private List<String> mTitles;
-
-    public FragmentAdapter(Context context,FragmentManager fm, List<Fragment> fragments, List<String> titles) {
+    public FragmentAdapter(FragmentManager fm, List<Fragment> fragments, List<String> titles) {
         super(fm);
         this.mFragments = fragments;
         this.mTitles = titles;

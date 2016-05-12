@@ -1,5 +1,7 @@
 package com.wangziqing.goubige.http;
 
+import com.wangziqing.goubige.model.Page;
+
 import org.xutils.http.RequestParams;
 
 /**
@@ -22,5 +24,9 @@ public class RequestParamsFactory {
 
     public static RequestParams getUserDetailsByIDParams(int ID){
         return new RequestParams(host+"/user/"+ID);
+    }
+
+    public static RequestParams getUsersByPage(Page page,String tag){
+        return new RequestParams(host+"/user?"+"pageNum="+page.page+"&&pageSize="+page.pageSize+"&&tag="+tag);
     }
 }

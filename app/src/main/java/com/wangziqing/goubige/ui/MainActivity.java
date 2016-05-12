@@ -78,6 +78,7 @@ public class MainActivity extends BaseActivity {
     private GoodsListFragment goodsListFragment;
     private GoodsListFragment goodsListFragment1;
     private BigSortsListFragment bigSortsListFragment;
+    private UsersListFragment usersListFragment;
     private TestFragment testFragment1,testFragment2;
     private UsersService usersService;
 
@@ -98,6 +99,7 @@ public class MainActivity extends BaseActivity {
         bigSortsListFragment = new BigSortsListFragment();
         testFragment1 = new TestFragment();
         testFragment2 = new TestFragment();
+        usersListFragment=new UsersListFragment();
         //初始化TabLayout的title数据集
         titles = new ArrayList<>();
         titles.add("推荐");
@@ -109,9 +111,9 @@ public class MainActivity extends BaseActivity {
         fragments.add(goodsListFragment1);
         fragments.add(bigSortsListFragment);
         fragments.add(testFragment1);
-        fragments.add(testFragment2);
+        fragments.add(usersListFragment);
         //创建ViewPager的adapter
-        mainAdapter = new FragmentAdapter(this,getSupportFragmentManager(), fragments, titles);
+        mainAdapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
     }
 
     private void initView() {

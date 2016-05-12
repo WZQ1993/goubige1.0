@@ -67,7 +67,7 @@ public class UserDetailActivity extends BaseActivity{
         File image= FilesUtils.getFileutils().getImage(user.getID());
         if(null==image){
             //从网络加载
-            x.image().bind(userImg, MyData.getHOST()+user.getUserImg(), MyImageOptionsFactory.getHeaderImageOptions());
+            x.image().bind(userImg, MyData.getHOST()+"/images/"+user.getUserImg(), MyImageOptionsFactory.getHeaderImageOptions());
         }else{
             //从本地加载
             x.image().bind(userImg,image.getPath(), MyImageOptionsFactory.getHeaderImageOptions());

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.wangziqing.goubige.http.HttpUtils;
 import com.wangziqing.goubige.http.RequestParamsFactory;
@@ -13,7 +14,9 @@ import com.wangziqing.goubige.http.UserUpdateParams;
 import com.wangziqing.goubige.http.UsersLoginParams;
 import com.wangziqing.goubige.http.UsersRegisterParams;
 import com.wangziqing.goubige.model.EventWithUser;
+import com.wangziqing.goubige.model.GetUsersEvent;
 import com.wangziqing.goubige.model.InitNavigationViewDataEvent;
+import com.wangziqing.goubige.model.Page;
 import com.wangziqing.goubige.model.UpdateUserStartEvent;
 import com.wangziqing.goubige.model.GoToMainEvent;
 import com.wangziqing.goubige.model.Users;
@@ -25,6 +28,8 @@ import org.xutils.common.Callback;
 import org.xutils.ex.HttpException;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
+
+import java.util.List;
 
 /**
  * Created by WZQ_PC on 2016/3/6 0006.
@@ -163,6 +168,9 @@ public class UsersService extends BaseService {
                                     .user(user)
                                     .method("showUserDetailEvent"));
                     break;
+                case "getUsers":
+                    EventBusFactory.getHttpEventBus().post(JSON.parseObject(result,GetUsersEvent.class));
+                    break;
                 default:
                     break;
             }
@@ -193,6 +201,7 @@ public class UsersService extends BaseService {
 
         }
     };
+
     public void login(Users user) {
         Log.d(TAG,user.toString());
         UsersLoginParams params= new UsersLoginParams();
@@ -222,6 +231,16 @@ public class UsersService extends BaseService {
     }
     public void getUserDetailsByID(int ID){
         RequestParams params=RequestParamsFactory.getUserDetailsByIDParams(ID);
+        HttpUtils.doGet(params,BaseCallback);
+    }
+
+    /**
+     * 异步获取用户列表
+     * @param page
+     */
+    public void getUsers(Page page,String tag){
+        Log.d(TAG,page.page+"-"+page.pageSize);
+        RequestParams params=RequestParamsFactory.getUsersByPage(page,tag);
         HttpUtils.doGet(params,BaseCallback);
     }
 }

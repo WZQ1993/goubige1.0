@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="150dp"
-    android:background="@color/lib__primaryDark"
     android:orientation="vertical"
-    android:contextClickable="false">
+    android:contextClickable="false"
+    android:background="@color/white">
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,34 +18,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:background="@color/lib__primary"
         android:gravity="center"
         android:orientation="horizontal"
         android:layout_gravity="bottom">
 
         <com.wangziqing.goubige.utils.CricleImageView
-            android:id="@+id/detail_user1"
+            android:id="@+id/hot_user1"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="15dp"
             android:src="@drawable/logo" />
 
         <com.wangziqing.goubige.utils.CricleImageView
-            android:id="@+id/detail_user2"
+            android:id="@+id/hot_user2"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="15dp"
             android:src="@drawable/logo" />
 
         <com.wangziqing.goubige.utils.CricleImageView
-            android:id="@+id/detail_user3"
+            android:id="@+id/hot_user3"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="15dp"
             android:src="@drawable/logo" />
 
         <com.wangziqing.goubige.utils.CricleImageView
-            android:id="@+id/detail_user4"
+            android:id="@+id/hot_user4"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="15dp"
