@@ -79,7 +79,7 @@ public class MainActivity extends BaseActivity {
     private GoodsListFragment goodsListFragment1;
     private BigSortsListFragment bigSortsListFragment;
     private UsersListFragment usersListFragment;
-    private TestFragment testFragment1,testFragment2;
+    private SharesListFragment sharesListFragment;
     private UsersService usersService;
 
     @Override
@@ -97,8 +97,7 @@ public class MainActivity extends BaseActivity {
         goodsListFragment = new GoodsListFragment();
         goodsListFragment1 = new GoodsListFragment();
         bigSortsListFragment = new BigSortsListFragment();
-        testFragment1 = new TestFragment();
-        testFragment2 = new TestFragment();
+        sharesListFragment= new SharesListFragment();
         usersListFragment=new UsersListFragment();
         //初始化TabLayout的title数据集
         titles = new ArrayList<>();
@@ -110,7 +109,7 @@ public class MainActivity extends BaseActivity {
         fragments.add(goodsListFragment);
         fragments.add(goodsListFragment1);
         fragments.add(bigSortsListFragment);
-        fragments.add(testFragment1);
+        fragments.add(sharesListFragment);
         fragments.add(usersListFragment);
         //创建ViewPager的adapter
         mainAdapter = new FragmentAdapter(getSupportFragmentManager(), fragments, titles);
@@ -124,7 +123,7 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.all);
+        actionBar.setHomeAsUpIndicator(R.drawable.menu);
         //对NavigationView添加item的监听事件
         mNavigationView.setNavigationItemSelectedListener(naviListener);
         //初始化TabLayout的title

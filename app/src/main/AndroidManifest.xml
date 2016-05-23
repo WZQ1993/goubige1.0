@@ -24,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.BaseActivity"></activity>
         <activity
             android:name=".ui.MainActivity"
             android:label="首页"></activity>
@@ -40,6 +41,7 @@
         <activity android:name=".ui.UserDetailActivity"></activity>
         <activity android:name=".ui.LoginActivity"></activity>
         <activity android:name=".ui.RegsterAvtivity"></activity>
+        <activity android:name=".ui.ShareDetailActivity"></activity>
     </application>
 
 </manifest>

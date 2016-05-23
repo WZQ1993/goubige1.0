@@ -1,5 +1,6 @@
 package com.wangziqing.goubige.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -8,7 +9,7 @@ import java.sql.Timestamp;
     */ 
 
 
-public class Good{
+public class Good implements Serializable{
 	private String ID;
 	private String title;
 	private String url;

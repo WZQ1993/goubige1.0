@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="100dp"
+    android:orientation="horizontal"
+    android:background="#ffffff">
+    <com.wangziqing.goubige.utils.CricleImageView
+        android:id="@+id/comment_item_userimg"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="15dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/logo" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="100dp">
+        <TextView
+            android:id="@+id/comment_item_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="UserName"
+            android:textColor="@color/primary_text_default_material_light"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/comment_item_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:text="12分钟前"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/primary_text_default_material_light"
+            android:textSize="10sp" />
+        <TextView
+            android:id="@+id/comment_item_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="\u3000\u3000这是评论内容这是评论内容这是评论内容"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:textColor="@color/primary_text_default_material_light"
+            android:textSize="12sp"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentStart="false"
+            android:layout_below="@+id/comment_item_username" />
+    </RelativeLayout>
+</LinearLayout>

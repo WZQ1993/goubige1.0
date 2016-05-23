@@ -29,4 +29,11 @@ public class RequestParamsFactory {
     public static RequestParams getUsersByPage(Page page,String tag){
         return new RequestParams(host+"/user?"+"pageNum="+page.page+"&&pageSize="+page.pageSize+"&&tag="+tag);
     }
+
+    public static RequestParams getShareByPage(Page page,String tag){
+        return new RequestParams(host+"/share?"+"pageNum="+page.page+"&&pageSize="+page.pageSize+"&&tag="+tag);
+    }
+    public static RequestParams getCommentByPage(Page page,String tag,int shareID){
+        return new RequestParams(host+"/comment?"+"pageNum="+page.page+"&&pageSize="+page.pageSize+"&&tag="+tag+"&&shareID="+shareID);
+    }
 }

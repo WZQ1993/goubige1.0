@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:id="@+id/share_item_View">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="170dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/share_item_good_image"
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:scaleType="center"
+            android:src="@drawable/test"
+            android:layout_alignParentRight="true" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_toLeftOf="@+id/share_item_good_image">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.wangziqing.goubige.utils.CricleImageView
+                    android:id="@+id/share_item_user_image"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="3dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/logo" />
+
+                <TextView
+                    android:id="@+id/share_item_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:gravity="bottom"
+                    android:text="Name" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/share_item_content"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:lineSpacingMultiplier="1.3"
+                android:text="\u3000\u3000强烈推荐" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/share_item_good_title"
+            android:layout_width="250dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="5dp"
+            android:ellipsize="end"
+            android:gravity="bottom"
+            android:maxLines="1"
+            android:text="我是商品标题我是商品标题我是商品标题我是商品标题"
+            android:paddingBottom="5dp" />
+
+        <ImageView
+            android:id="@+id/share_item_commentNum_png"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/comment"
+            android:layout_toLeftOf="@+id/share_item_commentNum"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp" />
+
+        <TextView
+            android:id="@+id/share_item_commentNum"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:gravity="bottom"
+            android:text="25"
+            android:textStyle="italic"
+            android:paddingBottom="5dp"
+            android:layout_toLeftOf="@+id/share_item_supportNum_png" />
+
+        <ImageView
+            android:id="@+id/share_item_supportNum_png"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="false"
+            android:src="@drawable/support0"
+            android:layout_toLeftOf="@+id/share_item_supportNum"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:id="@+id/share_item_supportNum"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="false"
+            android:layout_marginRight="15dp"
+            android:gravity="bottom"
+            android:text="25"
+            android:textStyle="italic"
+            android:paddingBottom="5dp" />
+    </RelativeLayout>
+</LinearLayout>
