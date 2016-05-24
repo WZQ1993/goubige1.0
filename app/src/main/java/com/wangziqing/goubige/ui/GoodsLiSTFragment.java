@@ -17,8 +17,12 @@ import com.wangziqing.goubige.InfoDetailsFragment;
 import com.wangziqing.goubige.R;
 import com.wangziqing.goubige.http.GoodsParams;
 import com.wangziqing.goubige.model.Good;
+import com.wangziqing.goubige.model.GoodEvent;
+import com.wangziqing.goubige.model.Goods;
 import com.wangziqing.goubige.model.InitGoodsEvent;
+import com.wangziqing.goubige.model.Page;
 import com.wangziqing.goubige.service.GoodService;
+import com.wangziqing.goubige.service.GoodsService;
 import com.wangziqing.goubige.service.ServiceFactory;
 import com.wangziqing.goubige.ui.utils.DividerItemDecoration;
 import com.wangziqing.goubige.ui.utils.GoodsListAdapter;
@@ -46,11 +50,13 @@ public class GoodsListFragment extends BaseFragment {
     @ViewInject(R.id.tab_layout)
     private TabLayout mTabLayout;
 
-    private GoodService goodService;
+    private GoodsService goodService;
     private List<Good> goods;
     private StaggeredGridLayoutManager myLayoutManager;
     private GoodsListAdapter myListAdapter;
     private OnLoadMoreListener onLoadMoreListener;
+
+    private Page page;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,64 +67,52 @@ public class GoodsListFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        goodService = ServiceFactory.getGoodService();
+        goodService = ServiceFactory.getGoodsService();
         myLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         onLoadMoreListener = new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
                 //只负责其中发送请求
-                myListAdapter.goodsParams.pageNum(++myListAdapter.goodsParams.pageNum);
-                goodService.getGoods(myListAdapter.goodsParams, 0);
+                page.page++;
+                goodService.getGoodByPage(page,"goods_loadMore");
             }
         };
         myListAdapter = new GoodsListAdapter(getActivity());
-        myListAdapter.goodsParams(new GoodsParams());
         initData();
     }
 
     //初始化数据
     private void initData() {
+        page=new Page();
         mSwipeRefreshWidget.setColorSchemeColors(R.color.white, R.color.background, R.color.black);
         //初次
         mSwipeRefreshWidget.setRefreshing(true);
         mRecyclerView.setLayoutManager(myLayoutManager);
         //设置间隔
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), 10, 10));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),5,5));
         mRecyclerView.addOnScrollListener(new OnRecyclerScrollListener());
-        goodService.initGoodsData(0);
+        myListAdapter.onLoadMoreListener(onLoadMoreListener);
+        mRecyclerView.setAdapter(myListAdapter);
+        refreshAction();
     }
 
     @Event(value = R.id.refresh_layout, type = SwipeRefreshLayout.OnRefreshListener.class)
     private void refreshAction() {
         //只刷新数据
+        page.page = 1;
         mSwipeRefreshWidget.setRefreshing(true);
-        goodService.initGoodsData(1);
+        goodService.getGoodByPage(page,"goods_refresh");
     }
 
     @Subscribe
-    public void GoodsEvent(InitGoodsEvent initGoodsEvent) {
-        myListAdapter.goodsParams.pageNum(1).pageSize(10);
-        goods = initGoodsEvent.goodsResponse.getData();
-        switch (initGoodsEvent.type) {
-            case "init":
-                mSwipeRefreshWidget.setRefreshing(false);
-                mRecyclerView.setAdapter(myListAdapter
-                        .goods(goods)
-                        .onLoadMoreListener(onLoadMoreListener)
-                );
-                break;
-            case "refresh":
-                mSwipeRefreshWidget.setRefreshing(false);
-                refreshView(goods);
-                break;
-            default:
-                break;
-        }
-
+    public void GoodEvent(GoodEvent event) {
+        if (!event.tag.equals("goods_refresh")) return;
+        mSwipeRefreshWidget.setRefreshing(false);
+        refreshView(event.list);
     }
 
     //刷新商品界面
-    public void refreshView(List<Good> goods) {
+    public void refreshView(List<Goods> goods) {
         myListAdapter.goods(goods);
         myListAdapter.notifyDataSetChanged();
     }

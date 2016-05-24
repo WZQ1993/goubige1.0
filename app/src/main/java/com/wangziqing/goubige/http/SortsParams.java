@@ -8,7 +8,7 @@ import org.xutils.http.annotation.HttpRequest;
  */
 @HttpRequest(
         //host表示主机域名或IP地址
-        host = "http://192.168.1.20:8080/goubige",
+        host = "http://192.168.0.107:8080/goubige",
         //path表示请求的资源
         path = "/sorts"
         /*builder = DefaultParamsBuilder.class可选参数, 控制参数构建过程, 定义参数签名, SSL证书等*/)

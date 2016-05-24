@@ -18,6 +18,8 @@ import com.google.common.eventbus.Subscribe;
 import com.wangziqing.goubige.R;
 import com.wangziqing.goubige.http.GoodsParams;
 import com.wangziqing.goubige.model.Good;
+import com.wangziqing.goubige.model.GoodEvent;
+import com.wangziqing.goubige.model.Goods;
 import com.wangziqing.goubige.model.LoadedMoreEvent;
 import com.wangziqing.goubige.ui.ItemShowActivity;
 import com.wangziqing.goubige.utils.EventBusFactory;
@@ -36,7 +38,7 @@ public class GoodsListAdapter extends RecyclerView.Adapter<ViewHolder> {
     private static final int TYPE_FOOTER = 1;
     private static final String TAG = "GoodsListAdapter";
     public GoodsParams goodsParams;
-    private List<Good> goods;
+    private List<Goods> goods;
     private ProgressBar pbLoading;
     private TextView tvLoadMore;
     private boolean loading=false;
@@ -52,7 +54,7 @@ public class GoodsListAdapter extends RecyclerView.Adapter<ViewHolder> {
         EventBusFactory.getHttpEventBus().unregister(this);
     }
 
-    public GoodsListAdapter goods(List<Good> goods) {
+    public GoodsListAdapter goods(List<Goods> goods) {
         this.goods = goods;
         return this;
     }
@@ -86,15 +88,14 @@ public class GoodsListAdapter extends RecyclerView.Adapter<ViewHolder> {
         int type = getItemViewType(position);
         if (type == TYPE_CONTENT) {
             ((ContentHolder) holder).position = position;
-            final Good good = goods.get(position);
+            final Goods good = goods.get(position);
             x.image().bind(((ContentHolder) holder).pic, good.getPic(),
                     MyImageOptionsFactory.getGoodImageOption());
             if(good.getTitle().length()>12){
                 good.setTitle(good.getTitle().substring(0,12)+"..");
             }
             ((ContentHolder) holder).title.setText(good.getTitle());
-            ((ContentHolder) holder).priceCurrent.setText("￥" + good.getPriceCurrent());
-            ((ContentHolder) holder).priveOld.setText("￥" + good.getPriceOld());
+            ((ContentHolder) holder).price.setText(good.getPrice());
             //点击事件监听
             ((ContentHolder) holder).pic.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,7 +115,11 @@ public class GoodsListAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return goods.size() + 1;
+        if(null==goods){
+            return 0;
+        }else{
+            return goods.size() + 1;
+        }
     }
 
     @Override
@@ -170,20 +175,17 @@ public class GoodsListAdapter extends RecyclerView.Adapter<ViewHolder> {
      * 加载事件结果处理
      */
     @Subscribe
-    private void loadedMoreEvent(LoadedMoreEvent loadedMoreEvent) {
-        loading=false;
+    private void loadedMoreEvent(GoodEvent event) {
+        if (!event.tag.equals("goods_loadMore")) return;
+        loading = false;
         showLoadMore();
-        if (loadedMoreEvent.isSuccess) {
-            //通知添加数据
-            this.notifyItemInserted(getListSize());
-            addData(loadedMoreEvent.goodsResponse.getData());
-            this.notifyDataSetChanged();
-        } else {
-
-        }
+        this.notifyItemInserted(getListSize());
+        addData(event.list);
+        //通知添加数据
+        this.notifyDataSetChanged();
     }
-    private void addData(List<Good> list){
-        for (Good good:list
+    private void addData(List<Goods> list){
+        for (Goods good:list
              ) {
             goods.add(good);
         }
@@ -203,8 +205,8 @@ public class GoodsListAdapter extends RecyclerView.Adapter<ViewHolder> {
         public CardView item;
         public ImageView pic;
         public TextView title;
-        public TextView priceCurrent;
-        public TextView priveOld;
+        public TextView price;
+//        public TextView priveOld;
         public int position;
         public static final int width = (int) Math.round(MyData.getWidth() * 0.4);
         public static final int height = (int) Math.round(width * 1.5);
@@ -217,9 +219,9 @@ public class GoodsListAdapter extends RecyclerView.Adapter<ViewHolder> {
             pic.setMaxWidth(width);
             pic.setMaxHeight(width);
             title = (TextView) itemview.findViewById(R.id.item_title);
-            priceCurrent = (TextView) itemview.findViewById(R.id.item_priceCurrent);
-            priveOld = (TextView) itemview.findViewById(R.id.item_priceOld);
-            priveOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            price= (TextView) itemview.findViewById(R.id.item_price);
+//            priveOld = (TextView) itemview.findViewById(R.id.item_priceOld);
+//            priveOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
     }
 }

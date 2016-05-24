@@ -42,13 +42,13 @@ public class BigSortsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return sorts.size();
     }
     public static class SortHolder extends RecyclerView.ViewHolder {
-        private static final int WIDTH= MyData.getWidth();
-        private static final int HEIGHT=(int)Math.round(WIDTH*0.5);
+//        private static final int WIDTH= MyData.getWidth();
+//        private static final int HEIGHT=(int)Math.round(WIDTH*0.5);
         public TextView content;
         SortHolder(TextView content){
             super(content);
             this.content=content;
-            content.setLayoutParams(new LinearLayout.LayoutParams(WIDTH, HEIGHT));
+//            content.setLayoutParams(new LinearLayout.LayoutParams(WIDTH, HEIGHT));
         }
     }
 }

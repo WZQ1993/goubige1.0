@@ -18,6 +18,7 @@ public class HttpUtils {
     }
 
     public static <T> Callback.Cancelable doGet(RequestParams requestParams, final Callback.CommonCallback<T> callback) {
+        Log.d(TAG,"doGet_done");
         Callback.Cancelable cancelable
                 = x.http().get(requestParams, callback);
         return cancelable;

@@ -13,6 +13,7 @@ public class ServiceFactory {
     private static final UsersService usersService =new UsersService();
     private static final ShareService shareService =new ShareService();
     private static final CommentService commentService=new CommentService();
+    private static final GoodsService goodsService=new GoodsService();
     public static GoodService getGoodService(){
         return goodService;
     }
@@ -25,5 +26,8 @@ public class ServiceFactory {
     public static ShareService getShareService(){return shareService;}
     public static CommentService getCommentService(){
         return commentService;
+    }
+    public static GoodsService getGoodsService(){
+        return goodsService;
     }
 }

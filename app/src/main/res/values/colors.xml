@@ -15,7 +15,7 @@
     <color name="black">#2b2a2a</color>
     <color name="price_current">#EE4000</color>
     <color name="price_old">#605f5f</color>
-    <color name="background">#e7e6e6</color>
+    <color name="background">#fbf9f9</color>
     <color name="users">#FFFFFF</color>
     <color name="tag_tip">#898989</color>
 </resources>
